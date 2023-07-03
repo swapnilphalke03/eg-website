@@ -116,6 +116,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     <Layout
       _appBar={{
         profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
         facilitator,
       }}
@@ -366,12 +367,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </VStack>
             </Stack>
           )}
-          {facilitator?.aadhar_verified !== "yes" && (
+          {!["yes", "in_progress"].includes(facilitator?.aadhar_verified) && (
             <Stack bg="white" space="5" p="5">
               <FrontEndTypo.H2 bold>
                 {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
               </FrontEndTypo.H2>
-              <FrontEndTypo.Primarybutton
+              {/* <FrontEndTypo.Primarybutton
                 onPress={(e) =>
                   navigate(`/aadhaar-kyc/${facilitator?.id}/aadhaar-number`, {
                     state: "/",
@@ -390,7 +391,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 }
               >
                 {t("SCAN_QR_CODE")}
-              </FrontEndTypo.Secondarybutton>
+              </FrontEndTypo.Secondarybutton> */}
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/aadhaar-kyc/${facilitator?.id}/upload`, {
+                    state: "/",
+                  });
+                }}
+              >
+                {t("AADHAR_UPLOAD_KYC")}
+              </FrontEndTypo.Primarybutton>
             </Stack>
           )}
           {isDocumentUpload() && (

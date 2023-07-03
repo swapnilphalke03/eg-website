@@ -368,7 +368,7 @@ export default function FacilitatorBasicDetails({
                     {facilitator?.extended_users?.marital_status ? (
                       <GetEnumValue
                         t={t}
-                        enumType={"FACILITATOR_MARITAL_STATUS"}
+                        enumType={"MARITAL_STATUS"}
                         enumOptionValue={
                           facilitator?.extended_users?.marital_status
                         }
@@ -433,7 +433,7 @@ export default function FacilitatorBasicDetails({
                       fontWeight="400"
                       flex="0.3"
                     >
-                      {facilitator?.references.name
+                      {facilitator?.references?.name
                         ? facilitator?.references.name
                         : "-"}
                     </FrontEndTypo.H3>
@@ -457,7 +457,7 @@ export default function FacilitatorBasicDetails({
                       fontWeight="400"
                       flex="0.3"
                     >
-                      {facilitator?.references.designation
+                      {facilitator?.references?.designation
                         ? facilitator?.references.designation
                         : "-"}
                     </FrontEndTypo.H3>
@@ -481,7 +481,7 @@ export default function FacilitatorBasicDetails({
                       fontWeight="400"
                       flex="0.3"
                     >
-                      {facilitator?.references.contact_number
+                      {facilitator?.references?.contact_number
                         ? facilitator?.references.contact_number
                         : "-"}
                     </FrontEndTypo.H3>

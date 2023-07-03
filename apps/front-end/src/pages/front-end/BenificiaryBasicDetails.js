@@ -207,14 +207,14 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("ADDRESS_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
+              {/* <IconByName
                 name="EditBoxLineIcon"
                 _icon={{ size: "20" }}
                 color="iconColor.100"
                 onPress={(e) => {
                   navigate(`/beneficiary/edit/${id}/address`);
                 }}
-              />
+              /> */}
             </HStack>
             <VStack>
               <HStack alignItems="Center" space="xl">
@@ -293,7 +293,7 @@ export default function BenificiaryBasicDetails() {
                   {`${
                     benificiary?.core_beneficiaries?.father_first_name
                       ? benificiary?.core_beneficiaries?.father_first_name
-                      : ""
+                      : "-"
                   } ${
                     benificiary?.core_beneficiaries?.father_middle_name
                       ? benificiary?.core_beneficiaries?.father_middle_name
@@ -325,7 +325,7 @@ export default function BenificiaryBasicDetails() {
                   {`${
                     benificiary?.core_beneficiaries?.mother_first_name
                       ? benificiary?.core_beneficiaries?.mother_first_name
-                      : ""
+                      : "-"
                   } ${
                     benificiary?.core_beneficiaries?.mother_middle_name
                       ? benificiary?.core_beneficiaries?.mother_middle_name
@@ -410,7 +410,7 @@ export default function BenificiaryBasicDetails() {
                   {benificiary?.extended_users?.marital_status ? (
                     <GetEnumValue
                       t={t}
-                      enumType={"BENEFICIARY_MARITAL_STATUS"}
+                      enumType={"MARITAL_STATUS"}
                       enumOptionValue={
                         benificiary?.extended_users?.marital_status
                       }
@@ -473,13 +473,13 @@ export default function BenificiaryBasicDetails() {
                   {`${
                     benificiary?.references[0]?.first_name
                       ? benificiary?.references[0]?.first_name
-                      : ""
+                      : "-"
                   } ${
-                    benificiary?.references[0]?.middle_name != "null"
+                    benificiary?.references[0]?.middle_name
                       ? benificiary?.references[0]?.middle_name
                       : ""
                   } ${
-                    benificiary?.references[0]?.last_name != "null"
+                    benificiary?.references[0]?.last_name
                       ? benificiary?.references[0]?.last_name
                       : ""
                   }`}
