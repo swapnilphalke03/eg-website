@@ -58,41 +58,37 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
 
   React.useEffect(async () => {
     setuserId(id?.id);
-    const { result } = await benificiaryRegistoryService.getOne(id?.id);
-    if (result) {
-      setFormData({
-        ...formData,
-        device_ownership: result?.core_beneficiaries?.device_ownership,
-        device_type: result?.core_beneficiaries?.device_type,
-        state: result?.state,
-        district: result?.district,
-        address: result?.address == "null" ? "" : result?.address,
-        block: result?.block,
-        village: result?.village,
-        grampanchayat:
-          result?.grampanchayat == "null" ? "" : result?.grampanchayat,
-        marital_status: result?.extended_users?.marital_status,
-        social_category: result?.extended_users?.social_category,
-        type_of_learner: result?.core_beneficiaries?.type_of_learner,
-        last_standard_of_education_year:
-          result?.core_beneficiaries?.last_standard_of_education_year,
-        last_standard_of_education:
-          result?.core_beneficiaries?.last_standard_of_education,
-        previous_school_type: result?.core_beneficiaries?.previous_school_type,
-        reason_of_leaving_education:
-          result?.core_beneficiaries?.reason_of_leaving_education,
-        learning_level: result?.program_beneficiaries?.learning_level,
-        learning_motivation: result?.program_beneficiaries?.learning_motivation,
-        type_of_support_needed:
-          result?.program_beneficiaries?.type_of_support_needed,
-        learning_motivation: getUniqueArray(
-          result?.program_beneficiaries?.learning_motivation
-        ),
-        type_of_support_needed: getUniqueArray(
-          result?.program_beneficiaries?.type_of_support_needed
-        ),
-      });
-    }
+    const qData = await benificiaryRegistoryService.getOne(id?.id);
+    setFormData({
+      ...formData,
+      device_ownership: qData?.result?.core_beneficiaries?.device_ownership,
+      device_type: qData?.result?.core_beneficiaries?.device_type,
+      state: qData?.result?.state,
+      district: qData?.result?.district,
+      address: qData?.result?.address == "null" ? "" : qData?.result?.address,
+      block: qData?.result?.block,
+      village: qData?.result?.village,
+      grampanchayat:
+        qData?.result?.grampanchayat == "null"
+          ? ""
+          : qData?.result?.grampanchayat,
+      marital_status: qData?.result?.extended_users?.marital_status,
+      social_category: qData?.result?.extended_users?.social_category,
+      type_of_learner: qData?.result?.core_beneficiaries?.type_of_learner,
+      last_standard_of_education_year:
+        qData?.result?.core_beneficiaries?.last_standard_of_education_year,
+      last_standard_of_education:
+        qData?.result?.core_beneficiaries?.last_standard_of_education,
+      previous_school_type:
+        qData?.result?.core_beneficiaries?.previous_school_type,
+      reason_of_leaving_education:
+        qData?.result?.core_beneficiaries?.reason_of_leaving_education,
+      learning_level: qData?.result?.program_beneficiaries?.learning_level,
+      learning_motivation:
+        qData?.result?.program_beneficiaries?.learning_motivation,
+      type_of_support_needed:
+        qData?.result?.program_beneficiaries?.type_of_support_needed,
+    });
   }, []);
 
   const onPressBackButton = async () => {
