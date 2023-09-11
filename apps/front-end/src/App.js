@@ -6,25 +6,27 @@ import {
   getTokernUserInfo,
   facilitatorRegistryService,
   setLocalUser,
-  t,
   logout,
 } from "@shiksha/common-lib";
+
 import guestRoutes from "./routes/guestRoutes";
 import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
+import PoAdminRoutes from "./routes/PoAdminRoutes";
 
 //TODO: separate out the theme related code from App
+
 initializeI18n(["translation"]);
 
 function App() {
   const [accessRoutes, setAccessRoutes] = React.useState([]);
-  const [token, setToken] = React.useState(localStorage.getItem("token"));
+  const token = localStorage.getItem("token");
   const [userTokenInfo, setUserTokenInfo] = React.useState();
 
   React.useEffect(async () => {
     if (token) {
       const tokenData = getTokernUserInfo();
-      const { hasura } = tokenData?.resource_access;
+      const { hasura } = tokenData?.resource_access || {};
       const { status, ...user } = await facilitatorRegistryService.getInfo();
       if (`${status}` === "401") {
         logout();
@@ -32,10 +34,16 @@ function App() {
       }
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
+
       if (hasura?.roles?.includes("facilitator")) {
         setAccessRoutes(routes);
-      } else {
+      } else if (hasura?.roles?.includes("program_owner")) {
+        setAccessRoutes(PoAdminRoutes);
+      } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
+      } else {
+        logout();
+        window.location.reload();
       }
     }
   }, []);
@@ -66,7 +74,6 @@ function App() {
           route: "/table",
         },
       ]}
-      appName="Teacher App"
       userTokenInfo={userTokenInfo}
     />
   );

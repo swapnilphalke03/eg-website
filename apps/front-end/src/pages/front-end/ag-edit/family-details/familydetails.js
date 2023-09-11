@@ -1,25 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
+import { Alert, Box, Button, HStack, Modal, VStack } from "native-base";
 import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-} from "native-base";
-import CustomRadio from "../../../../component/CustomRadio.js";
-import Steper from "../../../../component/Steper.js";
-import {
-  facilitatorRegistryService,
-  geolocationRegistryService,
-  Camera,
   Layout,
   H1,
   t,
@@ -28,14 +12,10 @@ import {
   IconByName,
   BodySmall,
   filtersByObject,
-  H2,
-  getBase64,
   BodyMedium,
-  changeLanguage,
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
-  uploadRegistryService,
   FrontEndTypo,
 } from "@shiksha/common-lib";
 import moment from "moment";
@@ -59,16 +39,11 @@ import {
 export default function agFormEdit({ ip }) {
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
-  const [cameraData, setCameraData] = React.useState([]);
   const [schema, setSchema] = React.useState({});
-  const [cameraSelection, setCameraSelection] = React.useState(0);
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const [addBtn, setAddBtn] = React.useState(t("YES"));
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
@@ -88,10 +63,6 @@ export default function agFormEdit({ ip }) {
     var FileSaver = require("file-saver");
     FileSaver.saveAs(`${image}`, "image.png");
   };
-
-  // React.useEffect(() => {
-  //   getImage();
-  // }, [page, credentials]);
 
   //getting data
   React.useEffect(async () => {
@@ -291,7 +262,7 @@ export default function agFormEdit({ ip }) {
     ["father_first_name", "mother_first_name"].forEach((key) => {
       if (
         key === "father_first_name" &&
-        data?.father_details?.father_first_name?.replaceAll(" ", "") === ""
+        data?.father_details?.father_first_name?.replace(/\s/g, "") === ""
       ) {
         errors?.father_details?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -364,6 +335,52 @@ export default function agFormEdit({ ip }) {
         }
       }
     }
+
+    if (id === "root_father_details_father_middle_name") {
+      if (data?.father_details?.father_middle_name === undefined) {
+        setFormData({
+          ...formData,
+          father_details: {
+            ...formData.father_details, // Spread the existing properties of father_details
+            father_middle_name: "", // Add the father_middle_name field with an empty string
+          },
+        });
+      }
+    }
+    if (id === "root_father_details_father_last_name") {
+      if (data?.father_details?.father_last_name === undefined) {
+        setFormData({
+          ...formData,
+          father_details: {
+            ...formData.father_details,
+            father_last_name: "",
+          },
+        });
+      }
+    }
+
+    if (id === "root_mother_details_mother_middle_name") {
+      if (data?.mother_details?.mother_middle_name === undefined) {
+        setFormData({
+          ...formData,
+          mother_details: {
+            ...formData.mother_details,
+            mother_middle_name: "",
+          },
+        });
+      }
+    }
+    if (id === "root_mother_details_mother_last_name") {
+      if (data?.mother_details?.mother_last_name === undefined) {
+        setFormData({
+          ...formData,
+          mother_details: {
+            ...formData.mother_details,
+            mother_last_name: "",
+          },
+        });
+      }
+    }
   };
 
   const onError = (data) => {
@@ -388,58 +405,67 @@ export default function agFormEdit({ ip }) {
       }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      <Box py={6} px={4} mb={5}>
-        {/* Box */}
-        {alert ? (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        ) : (
-          <React.Fragment />
-        )}
-        {page && page !== "" ? (
-          <Form
-            key={lang + addBtn}
-            ref={formRef}
-            widgets={{ RadioBtn, CustomR }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-            }}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              validator,
-              schema: schema ? schema : {},
-              uiSchema,
-              formData,
-              customValidate,
-              onChange,
-              onError,
-              onSubmit,
-              transformErrors,
-            }}
-          >
-            <FrontEndTypo.Primarybutton
-              mt="5"
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
+      {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <BodyMedium>{t("PAGE_NOT_ACCESSABLE")}</BodyMedium>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {/* Box */}
+          {alert ? (
+            <Alert status="warning" alignItems={"start"} mb="3">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{alert}</BodyMedium>
+              </HStack>
+            </Alert>
+          ) : (
+            <React.Fragment />
+          )}
+          {page && page !== "" ? (
+            <Form
+              key={lang + addBtn}
+              ref={formRef}
+              widgets={{ RadioBtn, CustomR }}
+              templates={{
+                FieldTemplate,
+                ArrayFieldTitleTemplate,
+                ObjectFieldTemplate,
+                TitleFieldTemplate,
+                DescriptionFieldTemplate,
+                BaseInputTemplate,
+              }}
+              extraErrors={errors}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                validator,
+                schema: schema ? schema : {},
+                uiSchema,
+                formData,
+                customValidate,
+                onChange,
+                onError,
+                onSubmit,
+                transformErrors,
+              }}
             >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </FrontEndTypo.Primarybutton>
-          </Form>
-        ) : (
-          <React.Fragment />
-        )}
-      </Box>
+              <FrontEndTypo.Primarybutton
+                mt="5"
+                type="submit"
+                onPress={() => formRef?.current?.submit()}
+              >
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            </Form>
+          ) : (
+            <React.Fragment />
+          )}
+        </Box>
+      )}
       <Modal
         isOpen={credentials}
         onClose={() => setCredentials(false)}

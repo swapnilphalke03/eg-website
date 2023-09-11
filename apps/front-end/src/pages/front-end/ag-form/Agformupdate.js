@@ -135,7 +135,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      setAlert("Geolocation is not supported by this browser.");
+      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
     }
   };
 
@@ -154,19 +154,19 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
   function showError(error) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        setAlert("User denied the request for Geolocation.");
+        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
 
         break;
       case error.POSITION_UNAVAILABLE:
-        setAlert("Location information is unavailable.");
+        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
 
         break;
       case error.TIMEOUT:
-        setAlert("The request to get user location timed out.");
+        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
 
         break;
       case error.UNKNOWN_ERROR:
-        setAlert("An unknown error occurred.");
+        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
 
         break;
     }
@@ -381,8 +381,9 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     }
     ["grampanchayat"].forEach((key) => {
       if (
-        key === "grampanchayat" &&
-        data?.grampanchayat?.replaceAll(" ", "") === ""
+        (key === "grampanchayat" &&
+          data?.grampanchayat?.replaceAll(" ", "") === "") ||
+        data?.grampanchayat === null
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -524,7 +525,7 @@ export default function AgformUpdate({ userTokenInfo, footerLinks }) {
     if (id === "root_district") {
       await setBlock({
         district: data?.district,
-        block: data?.block,
+        block: null,
         schemaData: schema,
       });
     }

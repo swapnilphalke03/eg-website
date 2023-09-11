@@ -1,6 +1,5 @@
 import React from "react";
-import { useState } from "react";
-import { HStack, VStack, Box, Progress, Center } from "native-base";
+import { HStack, VStack, Box, Progress } from "native-base";
 import {
   arrList,
   FrontEndTypo,
@@ -62,14 +61,19 @@ export default function BenificiaryBasicDetails() {
                 &nbsp;
                 {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
               </FrontEndTypo.H1>
-              <IconByName
-                name="PencilLineIcon"
-                color="iconColor.200"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/basic-info`);
-                }}
-              />
+              {benificiary?.program_beneficiaries?.status ===
+              "enrolled_ip_verified" ? (
+                <></>
+              ) : (
+                <IconByName
+                  name="PencilLineIcon"
+                  color="iconColor.200"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/basic-info`);
+                  }}
+                />
+              )}
             </HStack>
             <HStack alignItems="Center">
               <IconByName name="Cake2LineIcon" color="iconColor.300" />
@@ -105,16 +109,29 @@ export default function BenificiaryBasicDetails() {
             </HStack>
             <Box>
               <Progress
-                value={arrList(benificiary, [
-                  "email_id",
-                  "mobile",
-                  "alternative_mobile_number",
-                ])}
+                value={arrList(
+                  {
+                    ...benificiary,
+                    device_type: benificiary?.core_beneficiaries?.device_type,
+                    device_ownership:
+                      benificiary?.core_beneficiaries?.device_ownership,
+                    mark_as_whatsapp_number:
+                      benificiary?.core_beneficiaries?.mark_as_whatsapp_number,
+                  },
+                  [
+                    "email_id",
+                    "mobile",
+                    "alternative_mobile_number",
+                    "device_type",
+                    "device_ownership",
+                    "mark_as_whatsapp_number",
+                  ]
+                )}
                 size="xs"
                 colorScheme="info"
               />
             </Box>
-            <VStack space="2" pt="5">
+            <VStack space="4" pt="5">
               <HStack
                 alignItems="Center"
                 justifyContent="space-between"
@@ -132,15 +149,6 @@ export default function BenificiaryBasicDetails() {
                 >
                   {benificiary?.mobile ? benificiary?.mobile : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="CellphoneLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/contact-info`);
-                  }}
-                />
               </HStack>
 
               <HStack
@@ -166,12 +174,6 @@ export default function BenificiaryBasicDetails() {
                     ? benificiary?.alternative_mobile_number
                     : "-"}
                 </FrontEndTypo.H3>
-
-                <IconByName
-                  name="SmartphoneLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                />
               </HStack>
 
               <HStack alignItems="Center" justifyContent="space-between">
@@ -183,60 +185,6 @@ export default function BenificiaryBasicDetails() {
                   {benificiary?.email_id !== "null"
                     ? benificiary?.email_id
                     : "-"}
-                </FrontEndTypo.H3>
-
-                <IconByName
-                  name="MailLineIcon"
-                  color="iconColor.100"
-                  _icon={{ size: "20px" }}
-                />
-              </HStack>
-            </VStack>
-          </VStack>
-
-          <VStack
-            px="5"
-            py="3"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H3 bold color="textGreyColor.800">
-                {t("ADDRESS_DETAILS")}
-              </FrontEndTypo.H3>
-              {/* <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/address`);
-                }}
-              /> */}
-            </HStack>
-            <VStack>
-              <HStack alignItems="Center" space="xl">
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="0.4"
-                >
-                  {t("HOME")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="0.3">
-                  {[
-                    benificiary?.address == "null" ? "" : benificiary?.address,
-                    benificiary?.state,
-                    benificiary?.district,
-                    benificiary?.block,
-                    benificiary?.village,
-                    benificiary?.grampanchayat,
-                  ]
-                    .filter((e) => e)
-                    .join(", ")}
                 </FrontEndTypo.H3>
               </HStack>
             </VStack>
@@ -255,14 +203,19 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 fontWeight="700" color="textGreyColor.800" bold>
                 {t("FAMILY_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/family-details`);
-                }}
-              />
+              {benificiary?.program_beneficiaries?.status ===
+              "enrolled_ip_verified" ? (
+                <></>
+              ) : (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/family-details`);
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
@@ -438,14 +391,19 @@ export default function BenificiaryBasicDetails() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("REFERENCE_DETAILS")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${id}/reference-details`);
-                }}
-              />
+              {benificiary?.program_beneficiaries?.status ===
+              "enrolled_ip_verified" ? (
+                <></>
+              ) : (
+                <IconByName
+                  name="EditBoxLineIcon"
+                  color="iconColor.100"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    navigate(`/beneficiary/edit/${id}/reference-details`);
+                  }}
+                />
+              )}
             </HStack>
             <Box>
               <Progress
@@ -454,6 +412,7 @@ export default function BenificiaryBasicDetails() {
                   "middle_name",
                   "last_name",
                   "relation",
+                  "contact_number",
                 ])}
                 size="xs"
                 colorScheme="info"

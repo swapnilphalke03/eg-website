@@ -1,40 +1,109 @@
-import Dashboard from "pages/front-end/Dashboard";
-import Home from "pages/front-end/Home";
-import basicDetails from "../pages/front-end/ag-edit/basicDetails";
-import educationDetails from "../pages/front-end/ag-edit/education-details-further-studies/educationDetails";
-import contactDetailsEdit from "../pages/front-end/ag-edit/contact-details/contactDetailsEdit";
-import addressEdit from "../pages/front-end/ag-edit/address/addressEdit";
-import personaldetails from "../pages/front-end/ag-edit/personal-details/personaldetails";
-import referencedetails from "../pages/front-end/ag-edit/reference-details/referencedetails";
-import familydetails from "../pages/front-end/ag-edit/family-details/familydetails";
-import uploadphoto from "../pages/front-end/ag-edit/upload-photo/uploadphoto";
-import futureStudy from "../pages/front-end/ag-edit/education-details-further-studies/futureStudy";
-import otherdetails from "../pages/front-end/ag-edit/other-details/otherdetails";
+import React from "react";
+const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
+const Home = React.lazy(() => import("pages/front-end/Home"));
+const basicDetails = React.lazy(() =>
+  import("../pages/front-end/ag-edit/basicDetails")
+);
+const educationDetails = React.lazy(() =>
+  import(
+    "pages/front-end/ag-edit/education-details-further-studies/educationDetails"
+  )
+);
+const contactDetailsEdit = React.lazy(() =>
+  import("pages/front-end/ag-edit/contact-details/contactDetailsEdit")
+);
+const addressEdit = React.lazy(() =>
+  import("pages/front-end/ag-edit/address/addressEdit")
+);
+const personaldetails = React.lazy(() =>
+  import("pages/front-end/ag-edit/personal-details/personaldetails")
+);
+const referencedetails = React.lazy(() =>
+  import("pages/front-end/ag-edit/reference-details/referencedetails")
+);
+const familydetails = React.lazy(() =>
+  import("pages/front-end/ag-edit/family-details/familydetails")
+);
+const uploadphoto = React.lazy(() =>
+  import("pages/front-end/ag-edit/upload-photo/uploadphoto")
+);
+const futureStudy = React.lazy(() =>
+  import(
+    "pages/front-end/ag-edit/education-details-further-studies/futureStudy"
+  )
+);
+const otherdetails = React.lazy(() =>
+  import("pages/front-end/ag-edit/other-details/otherdetails")
+);
 
-import subjectDetails from "../pages/front-end/ag-edit/choose-subjects/subjectDetails";
-import Agduplicate from "pages/front-end/ag-form/Agduplicate";
-import Agform from "pages/front-end/ag-form/Agform";
-import Docschecklist from "pages/front-end/ag-form/Docschecklist";
-import LearnerProfile from "pages/front-end/ag-form/LearnerProfile";
-import BenificiaryListView from "pages/front-end/BenificiaryListView";
-import BenificiaryProfileView from "../pages/front-end/BenificiaryProfileView";
-import CountScreenView from "../pages/front-end/CountScreenView";
-import AgformUpdate from "pages/front-end/ag-form/Agformupdate";
-import Agadhaar from "pages/front-end/ag-form/Agadhaar";
-import Success from "pages/front-end/Success";
-import Profile from "pages/front-end/facilitator/Profile";
-import AdharKyc from "pages/front-end/AadhaarKyc/AadhaarKyc";
-import BenificiaryBasicDetails from "pages/front-end/BenificiaryBasicDetails";
-import BenificiaryEducation from "pages/front-end/BenificiaryEducation";
-import BenificiaryEnrollment from "pages/front-end/BenificiaryEnrollment";
-import BenificiaryAadhaarDetails from "pages/front-end/BenificiaryAadhaarDetails";
-import EditForm from "../pages/front-end/facilitator/edit/Form";
-import ArrayForm from "../pages/front-end/facilitator/edit/ArrayForm";
-import FacilitatorBasicDetails from "pages/front-end/facilitator/FacilitatorBasicDetails";
-import FacilitatorQualification from "pages/front-end/facilitator/FacilitatorQualification";
-import BenificiaryProfilePhoto from "pages/front-end/BenificiaryProfilePhoto";
+const EnrollmentForm = React.lazy(() =>
+  import("pages/front-end/ag-edit/enrollment/EnrollmentForm")
+);
+const Agduplicate = React.lazy(() =>
+  import("pages/front-end/ag-form/Agduplicate")
+);
+const Agform = React.lazy(() => import("pages/front-end/ag-form/Agform"));
+const Docschecklist = React.lazy(() =>
+  import("pages/front-end/ag-form/Docschecklist")
+);
+const LearnerProfile = React.lazy(() =>
+  import("pages/front-end/ag-form/LearnerProfile")
+);
+const BenificiaryListView = React.lazy(() =>
+  import("pages/front-end/BenificiaryListView")
+);
+const BenificiaryProfileView = React.lazy(() =>
+  import("pages/front-end/BenificiaryProfileView")
+);
+const CountScreenView = React.lazy(() =>
+  import("pages/front-end/CountScreenView")
+);
+const AgformUpdate = React.lazy(() =>
+  import("pages/front-end/ag-form/Agformupdate")
+);
+const Agadhaar = React.lazy(() => import("pages/front-end/ag-form/Agadhaar"));
+const Success = React.lazy(() => import("pages/front-end/Success"));
+const Profile = React.lazy(() => import("pages/front-end/facilitator/Profile"));
+const AdharKyc = React.lazy(() =>
+  import("pages/front-end/AadhaarKyc/AadhaarKyc")
+);
+const BenificiaryBasicDetails = React.lazy(() =>
+  import("pages/front-end/BenificiaryBasicDetails")
+);
+const BenificiaryEducation = React.lazy(() =>
+  import("pages/front-end/BenificiaryEducation")
+);
+const BenificiaryJourney = React.lazy(() =>
+  import("pages/front-end/BenificiaryJourney")
+);
+const BenificiaryEnrollment = React.lazy(() =>
+  import("pages/front-end/BenificiaryEnrollment")
+);
+const BenificiaryAadhaarDetails = React.lazy(() =>
+  import("pages/front-end/BenificiaryAadhaarDetails")
+);
+const EditForm = React.lazy(() =>
+  import("pages/front-end/facilitator/edit/Form")
+);
 
-import EnrollmentReceipt from "../pages/front-end/ag-edit/choose-subjects/ErollmentReceipt";
+const ArrayForm = React.lazy(() =>
+  import("pages/front-end/facilitator/edit/ArrayForm")
+);
+const FacilitatorBasicDetails = React.lazy(() =>
+  import("pages/front-end/facilitator/FacilitatorBasicDetails")
+);
+const FacilitatorQualification = React.lazy(() =>
+  import("pages/front-end/facilitator/FacilitatorQualification")
+);
+const BenificiaryProfilePhoto = React.lazy(() =>
+  import("pages/front-end/BenificiaryProfilePhoto")
+);
+const AadhaarDetails = React.lazy(() =>
+  import("pages/front-end/facilitator/AadhaarDetails")
+);
+const BenificiaryAddress = React.lazy(() =>
+  import("pages/front-end/BenificiaryAddress")
+);
 
 export default [
   { path: "/form", component: Home },
@@ -78,7 +147,7 @@ export default [
   },
   {
     path: "/beneficiary/edit/:id/enrollment-details",
-    component: subjectDetails,
+    component: EnrollmentForm,
   },
   {
     path: "/beneficiary/edit/:id/reference-details",
@@ -116,6 +185,10 @@ export default [
     component: BenificiaryEducation,
   },
   {
+    path: "/beneficiary/:id/benificiaryJourney",
+    component: BenificiaryJourney,
+  },
+  {
     path: "/beneficiary/:id/enrollmentdetails",
     component: BenificiaryEnrollment,
   },
@@ -124,12 +197,20 @@ export default [
     component: BenificiaryAadhaarDetails,
   },
   {
+    path: "/beneficiary/:id/addressdetails",
+    component: BenificiaryAddress,
+  },
+  {
     path: "/beneficiary/:id/upload/:photoNo",
     component: BenificiaryProfilePhoto,
   },
   { path: "/profile", component: Profile },
   { path: "/profile/edit/array-form/:type", component: ArrayForm },
   { path: "/profile/edit/:step", component: EditForm },
+  {
+    path: "/profile/:id/aadhaardetails",
+    component: AadhaarDetails,
+  },
   { path: "/profile/edit/:step/:photoNo", component: EditForm },
   {
     path: "/facilitatorbasicdetail",
@@ -140,8 +221,4 @@ export default [
     component: FacilitatorQualification,
   },
   { path: "*", component: Dashboard },
-  {
-    path: "/beneficiary/edit/:id/enrollment-receipt",
-    component: EnrollmentReceipt,
-  },
 ];

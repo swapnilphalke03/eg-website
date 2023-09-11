@@ -1,27 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "../ag-form/parts/SchemaAdhaar.js";
-import {
-  Alert,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Image,
-  Modal,
-  Radio,
-  Stack,
-  VStack,
-  Text,
-  TextArea,
-} from "native-base";
-import CustomRadio from "../../../component/CustomRadio";
-import Steper from "../../../component/Steper";
+import { Alert, Box, HStack, Modal, VStack, TextArea } from "native-base";
 import {
   facilitatorRegistryService,
   Layout,
-  t,
   BodyMedium,
   CustomOTPBox,
   FrontEndTypo,
@@ -30,9 +14,7 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 
-import moment from "moment";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Clipboard from "component/Clipboard.js";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -44,12 +26,14 @@ import {
   CustomR,
   Aadhaar,
 } from "../../../component/BaseInput";
-import { useScreenshot } from "use-screenshot-hook";
-import Success from "../Success.js";
+import { useTranslation } from "react-i18next";
 
 // App
 
 export default function Agform({ userTokenInfo, footerLinks }) {
+  const textAreaRef = useRef();
+  const [textVisible, settextVisible] = React.useState(false);
+  const { t } = useTranslation();
   const { authUser } = userTokenInfo;
   const [page, setPage] = React.useState();
   const [pages, setPages] = React.useState();
@@ -63,12 +47,12 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [userId, setuserId] = React.useState();
   const [isExistflag, setisExistflag] = React.useState(false);
+  const [underSameFacilitator, setunderSameFacilitator] = React.useState(true);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [addmodal, setaddmodal] = React.useState(false);
-  const [beneficiaryData, setBeneficiaryData] = React.useState({});
   const id = useParams();
   const navigate = useNavigate();
-
+  const location = useLocation();
   React.useEffect(async () => {
     setuserId(id?.id);
     if (userId) {
@@ -83,7 +67,16 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     }
   }, [userId]);
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    const route = location?.state?.route;
+    if (route) {
+      navigate(`/beneficiary/${userId}/aadhaardetails`, {
+        state: { id: userId, route: true },
+      });
+    } else {
+      navigate(`/beneficiary/${userId}/2`, {
+        state: { id: userId, route: true },
+      });
+    }
   };
   const ref = React.createRef(null);
 
@@ -199,15 +192,18 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
         const result = await userExist({ aadhar_no: data?.aadhar_no });
-        if (result.isUserExist) {
+        if (result.underSameFacilitator) {
+          setunderSameFacilitator(false);
           setisExistflag(true);
-        } else {
+        } else if (!result?.success) {
           setisExistflag(false);
+        } else if (result?.underSameFacilitator === false) {
+          setisExistflag(true);
+          setunderSameFacilitator(true);
         }
       }
     }
   };
-
   const onError = (data) => {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
@@ -258,20 +254,26 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const addAdhaarduplicate = async () => {
-    const adhaarduplicate = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/aadhaar-kyc/${userId}`, {
-      state: { aadhar_no: formData?.aadhar_no },
-    });
+    const text = textAreaRef.current.value;
+    if (text !== "") {
+      const adhaarduplicate = await AgRegistryService.updateAg(
+        formData,
+        userId
+      );
+      navigate(`/aadhaar-kyc/${userId}`, {
+        state: { aadhar_no: formData?.aadhar_no },
+      });
+      settextVisible(false);
+      setaddmodal(!addmodal);
+    } else {
+      settextVisible(true);
+    }
   };
 
   return (
     <Layout
       _appBar={{
-        onPressBackButton: (e) => {
-          navigate(`/beneficiary/${userId}/2`, {
-            state: { id: userId, route: true },
-          });
-        },
+        onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo"],
         lang,
         setLang,
@@ -305,7 +307,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
               TitleFieldTemplate,
               BaseInputTemplate,
               DescriptionFieldTemplate,
-              BaseInputTemplate,
             }}
             extraErrors={errors}
             showErrorList={false}
@@ -342,14 +343,6 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
               </FrontEndTypo.Primarybutton>
             )}
-            {/* <Button
-              mt="5"
-              variant={"primary"}
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
-            >
-              {pages[pages?.length - 1] === page ? "NEXT" : submitBtn}
-            </Button> */}
           </Form>
         ) : (
           <React.Fragment />
@@ -373,29 +366,44 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 {t("AG_LEARNER_ALREADY_IDENTIFIED")}
               </FrontEndTypo.H2>
             </HStack>
-            <VStack pt="3">
-              <FrontEndTypo.H5 color="textGreyColor.600">
-                {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
-              </FrontEndTypo.H5>
-            </VStack>
-            <FrontEndTypo.Primarybutton
-              py="2"
-              width="100%"
-              marginTop={"2em"}
-              onPress={() => {
-                setaddmodal(!addmodal);
-                setModalVisible(!modalVisible);
-              }}
-            >
-              {t("CONTINUE_ADDING")}
-            </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton
-              width="100%"
-              marginTop={"1em"}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              {t("CANCEL_AND_GO_BACK")}
-            </FrontEndTypo.Secondarybutton>
+            {underSameFacilitator && (
+              <React.Fragment>
+                <VStack pt="3">
+                  <FrontEndTypo.H5 color="textGreyColor.600">
+                    {t("AG_LEARNER_ALREADY_IDENTIFIED_DES")}
+                  </FrontEndTypo.H5>
+                </VStack>
+                <FrontEndTypo.Primarybutton
+                  py="2"
+                  width="100%"
+                  marginTop={"2em"}
+                  onPress={() => {
+                    setaddmodal(!addmodal);
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  {t("CONTINUE_ADDING")}
+                </FrontEndTypo.Primarybutton>
+              </React.Fragment>
+            )}
+
+            {underSameFacilitator ? (
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                marginTop={"1em"}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                {t("CANCEL_AND_GO_BACK")}
+              </FrontEndTypo.Secondarybutton>
+            ) : (
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                marginTop={"1em"}
+                onPress={() => navigate(`/beneficiary/${userId}`)}
+              >
+                {t("CANCEL_AND_GO_TO_PROFILE")}
+              </FrontEndTypo.Secondarybutton>
+            )}
           </Modal.Body>
         </Modal.Content>
       </Modal>
@@ -413,17 +421,23 @@ export default function Agform({ userTokenInfo, footerLinks }) {
                 {t("AG_ADDED_SUCCESSFULLY")}
               </FrontEndTypo.H1>
               <TextArea
+                ref={textAreaRef}
                 placeholder="Explain your claim of the AG Learner*"
                 w="100%"
                 onChange={(e) => {
                   getReason(e);
+                  settextVisible(false);
                 }}
               />
+              {textVisible && (
+                <FrontEndTypo.H2 color={"danger.500"}>
+                  {t("REQUIRED_MESSAGE")}
+                </FrontEndTypo.H2>
+              )}
               <FrontEndTypo.Primarybutton
                 width={250}
                 marginTop={"1em"}
                 onPress={() => {
-                  setaddmodal(!addmodal);
                   addAdhaarduplicate();
                 }}
               >

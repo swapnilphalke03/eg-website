@@ -64,7 +64,9 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validate()) {
-      const { user, token, error } = await login(credentials);
+      const { user, token, error } = credentials
+        ? await login(credentials)
+        : {};
       if (!error) {
         navigate("/");
         navigate(0);
@@ -79,7 +81,9 @@ export default function Login() {
   return (
     <Layout
       _appBar={{
-        onlyIconsShow: location?.state ? ["backBtn", "helpBtn"] : ["helpBtn"],
+        onlyIconsShow: location?.state
+          ? ["backBtn", "helpBtn"]
+          : ["helpBtn", "langBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
@@ -91,9 +95,9 @@ export default function Login() {
         <Image
           alignSelf="center"
           source={{
-            uri: "/splash1.png",
+            uri: "/images/logos/educate-girls200X200.png",
           }}
-          alt=""
+          alt="Educate Girls"
           resizeMode="contain"
           size={200}
         />

@@ -10,24 +10,55 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { objProps } from "@shiksha/common-lib";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
   const [facilitator, setFacilitator] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [progress, setProgress] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    facilitatorDetails();
-  }, []);
+    const percentage =
+      arrList(res, [
+        "device_ownership",
+        "mobile",
+        "device_type",
+        "gender",
+        "marital_status",
+        "social_category",
+        "name",
+        "contact_number",
+        "availability",
+      ]) +
+      arrList(
+        {
+          ...res,
+          qua_name: facilitator?.qualifications?.qualification_master?.name,
+        },
+        ["qualification_ids", "qua_name"]
+      ) +
+      arrList(res, [
+        "aadhar_no",
+        "aadhaar_verification_mode",
+        "aadhar_verified",
+      ]);
+    setProgress(percentage);
+    setLoading(false);
+  }, [facilitator]);
 
-  const facilitatorDetails = async () => {
+  React.useEffect(async () => {
     const result = await facilitatorRegistryService.getOne({ id });
     setFacilitator(result);
-  };
+  }, []);
+
+  const res = objProps(facilitator);
 
   return (
     <Layout
+      loading={loading}
       _appBar={{
         onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn"],
@@ -43,11 +74,10 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
           <Box paddingBottom="20px">
             <FrontEndTypo.H2 color="textGreyColor.900">
-              {t("COMPLETE_YOUR_PROFILE")}
+              {progress !== 300
+                ? t("COMPLETE_YOUR_PROFILE")
+                : t("PROFILE_COMPLETED")}
             </FrontEndTypo.H2>
-            <FrontEndTypo.H5 color="textGreyColor.900">
-              {t("INCREASE_YOUR_CHANCES_OF_GETTING_SELECTED")}
-            </FrontEndTypo.H5>
           </Box>
           <Box
             bg="boxBackgroundColour.100"
@@ -61,32 +91,30 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("BASIC_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  onPress={(e) => {
-                    navigate(`/facilitatorbasicdetail`);
-                  }}
-                />
+                {["quit"].includes(facilitator?.status) ? (
+                  <React.Fragment></React.Fragment>
+                ) : (
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/facilitatorbasicdetail`);
+                    }}
+                  />
+                )}
               </HStack>
               <Box paddingTop="2">
                 <Progress
-                  value={arrList(facilitator, [
-                    "first_name",
-                    "email_id",
-                    "last_name",
-                    "middle_name",
-                    "dob",
+                  value={arrList(res, [
+                    "device_ownership",
                     "mobile",
-                    "alternate_mobile",
-                    "address",
-                    "district",
-                    "block",
-                    "village",
-                    "grampanchayat",
+                    "device_type",
                     "gender",
                     "marital_status",
                     "social_category",
+                    "name",
+                    "contact_number",
+                    "availability",
                   ])}
                   size="xs"
                   colorScheme="info"
@@ -107,7 +135,18 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 {t("EDUCATION_AND_WORK_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      qua_name:
+                        facilitator?.qualifications?.qualification_master?.name,
+                    },
+                    ["qualification_ids", "qua_name"]
+                  )}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
@@ -118,13 +157,17 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("QUALIFICATION_DETAILS")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                    onPress={(e) => {
-                      navigate(`/facilitatorqualification`);
-                    }}
-                  />
+                  {["quit"].includes(facilitator?.status) ? (
+                    <React.Fragment></React.Fragment>
+                  ) : (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      color="textMaroonColor.400"
+                      onPress={(e) => {
+                        navigate(`/facilitatorqualification`);
+                      }}
+                    />
+                  )}
                 </HStack>
                 <Divider
                   orientation="horizontal"
@@ -139,13 +182,17 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("VOLUNTEER_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                    onPress={(e) => {
-                      navigate(`/profile/edit/array-form/vo_experience`);
-                    }}
-                  />
+                  {["quit"].includes(facilitator?.status) ? (
+                    <React.Fragment></React.Fragment>
+                  ) : (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      color="textMaroonColor.400"
+                      onPress={(e) => {
+                        navigate(`/profile/edit/array-form/vo_experience`);
+                      }}
+                    />
+                  )}
                 </HStack>
                 <Divider
                   orientation="horizontal"
@@ -162,13 +209,17 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       {t("WORK_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
-                    onPress={(e) => {
-                      navigate(`/profile/edit/array-form/experience`);
-                    }}
-                  />
+                  {["quit"].includes(facilitator?.status) ? (
+                    <React.Fragment></React.Fragment>
+                  ) : (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      color="textMaroonColor.400"
+                      onPress={(e) => {
+                        navigate(`/profile/edit/array-form/experience`);
+                      }}
+                    />
+                  )}
                 </HStack>
               </VStack>
             </VStack>
@@ -186,16 +237,28 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 <FrontEndTypo.H3 color="textGreyColor.800" bold>
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="textMaroonColor.400"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${facilitator?.id}/aadhaardetails`);
-                  }}
-                />
+                {["quit"].includes(facilitator?.status) ? (
+                  <React.Fragment></React.Fragment>
+                ) : (
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="textMaroonColor.400"
+                    onPress={(e) => {
+                      navigate(`/profile/${facilitator?.id}/aadhaardetails`);
+                    }}
+                  />
+                )}
               </HStack>
               <Box paddingTop="2">
-                <Progress value={45} size="xs" colorScheme="info" />
+                <Progress
+                  value={arrList(res, [
+                    "aadhar_no",
+                    "aadhaar_verification_mode",
+                    "aadhar_verified",
+                  ])}
+                  size="xs"
+                  colorScheme="info"
+                />
               </Box>
             </VStack>
           </Box>

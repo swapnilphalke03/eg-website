@@ -44,17 +44,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useScreenshot } from "use-screenshot-hook";
 
 import Clipboard from "component/Clipboard.js";
-import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  RadioBtn,
-  CustomR,
-  select,
-} from "../../../../component/BaseInput.js";
+import { templates, widgets } from "../../../../component/BaseInput.js";
 
 // App
 export default function agFormEdit({ ip }) {
@@ -80,7 +70,7 @@ export default function agFormEdit({ ip }) {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    navigate(`/beneficiary/profile/${userId}`);
   };
 
   const ref = React.createRef(null);
@@ -91,72 +81,75 @@ export default function agFormEdit({ ip }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  //getting data
-  React.useEffect(async () => {
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
+    }
+  };
+
+  const showPosition = async (position) => {
+    let lati = position.coords.latitude;
+    let longi = position.coords.longitude;
+
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData.result;
     setFormData(qData.result);
     setFormData({
       ...formData,
+      lat: lati.toString(),
+      long: longi.toString(),
       address: finalData?.address == "null" ? "" : finalData?.address,
       state: finalData?.state,
       district: finalData?.district,
       block: finalData?.block,
       village: finalData?.village,
-      grampanchayat: finalData?.grampanchayat,
+      grampanchayat:
+        finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
+    });
+  };
+
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
+
+        break;
+      case error.TIMEOUT:
+        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
+
+        break;
+    }
+  }
+
+  //getting data
+  React.useEffect(async () => {
+    getLocation();
+    const qData = await benificiaryRegistoryService.getOne(id);
+    const finalData = qData.result;
+    setFormData(qData.result);
+    setFormData({
+      ...formData,
+      lat: finalData?.lat,
+      long: finalData?.long,
+      address: finalData?.address == "null" ? "" : finalData?.address,
+      state: finalData?.state,
+      district: finalData?.district,
+      block: finalData?.block,
+      village: finalData?.village,
+      grampanchayat:
+        finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
     });
   }, []);
-
-  console.log("formdata", formData);
-
-  const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-      },
-    },
-    qualification: {
-      "ui:widget": CustomR,
-    },
-    degree: {
-      "ui:widget": CustomR,
-    },
-    gender: {
-      "ui:widget": CustomR,
-    },
-    sourcing_channel: {
-      "ui:widget": CustomR,
-    },
-    availability: {
-      "ui:widget": RadioBtn,
-    },
-
-    experience: {
-      related_to_teaching: {
-        "ui:widget": RadioBtn,
-      },
-    },
-
-    vo_experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-    experience: {
-      items: {
-        experience_in_years: { "ui:widget": CustomR },
-        related_to_teaching: {
-          "ui:widget": RadioBtn,
-        },
-      },
-    },
-  };
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -311,7 +304,7 @@ export default function agFormEdit({ ip }) {
       if (data?.mobile?.toString()?.length !== 10) {
         errors.mobile.addError(t("MINIMUM_LENGTH_IS_10"));
       }
-      if (!(data?.mobile > 6666666666 && data?.mobile < 9999999999)) {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
@@ -324,7 +317,7 @@ export default function agFormEdit({ ip }) {
     ["grampanchayat"].forEach((key) => {
       if (
         key === "grampanchayat" &&
-        data?.grampanchayat?.replaceAll(" ", "") === ""
+        data?.grampanchayat?.replace(/\s/g, "") === ""
       ) {
         errors?.[key]?.addError(
           `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
@@ -461,7 +454,7 @@ export default function agFormEdit({ ip }) {
     if (id === "root_district") {
       await setBlock({
         district: data?.district,
-        block: data?.block,
+        block: null,
         schemaData: schema,
       });
     }
@@ -507,7 +500,7 @@ export default function agFormEdit({ ip }) {
 
   const onSubmit = async (data) => {
     const updateDetails = await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    navigate(`/beneficiary/${userId}/addressdetails`);
   };
 
   return (
@@ -537,28 +530,20 @@ export default function agFormEdit({ ip }) {
           <Form
             key={lang + addBtn}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, select }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-            }}
             extraErrors={errors}
             showErrorList={false}
             noHtml5Validate={true}
             {...{
               validator,
               schema: schema ? schema : {},
-              uiSchema,
               formData,
               customValidate,
               onChange,
               onError,
               onSubmit,
               transformErrors,
+              widgets,
+              templates,
             }}
           >
             <FrontEndTypo.Primarybutton

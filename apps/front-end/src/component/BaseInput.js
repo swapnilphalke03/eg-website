@@ -6,7 +6,6 @@ import {
   FormControl,
   HStack,
   Image,
-  Pressable,
   Radio,
   Select,
   Stack,
@@ -24,16 +23,19 @@ import {
   CustomOTPBox,
   AdminTypo,
   chunk,
+  sprintF,
 } from "@shiksha/common-lib";
 import CustomRadio from "./CustomRadio";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
+// rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
   return <FloatingInput {...props} />;
 }
 
+// rjsf custom AddButton for ArrayFieldTemplate use in all form
 export function AddButton({ icon, iconType, ...btnProps }) {
   const { t } = useTranslation();
   return (
@@ -45,6 +47,7 @@ export function AddButton({ icon, iconType, ...btnProps }) {
   );
 }
 
+// rjsf custom RemoveButton for ArrayFieldTemplate use in all form
 export function RemoveButton({ icon, iconType, ...btnProps }) {
   const { t } = useTranslation();
   return (
@@ -56,6 +59,7 @@ export function RemoveButton({ icon, iconType, ...btnProps }) {
   );
 }
 
+// rjsf custom TitleFieldTemplate title field layout Template use in all form
 export const TitleFieldTemplate = ({ id, required, title }) => {
   const { t } = useTranslation();
   return (
@@ -68,6 +72,7 @@ export const TitleFieldTemplate = ({ id, required, title }) => {
   );
 };
 
+// rjsf custom DescriptionFieldTemplate field layout Template use in all form
 export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
@@ -79,6 +84,7 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   );
 };
 
+// rjsf custom ArrayFieldTemplate Array layout Template use in all form
 export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   const [isShow, setIsShow] = React.useState("");
   const { title } = schema;
@@ -164,6 +170,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   );
 };
 
+// rjsf custom FieldTemplate field layout Template use in all form
 export const FieldTemplate = ({
   id,
   style,
@@ -178,7 +185,6 @@ export const FieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
-  // console.log(label, type, id);
   return (
     <VStack
       style={style}
@@ -208,14 +214,20 @@ export const FieldTemplate = ({
     </VStack>
   );
 };
+
+// rjsf custom ObjectFieldTemplate object field layout Template use in all form
 export const ObjectFieldTemplate = (props) => {
   const { t } = useTranslation();
   return (
     <VStack alignItems="center" space="6">
       {props.properties.map((element, index) => (
-        <VStack key={`element${index}`} w="100%">
-          {element.content}
-        </VStack>
+        <div
+          key={`element${index}`}
+          id={`element_${element.name}`}
+          style={{ width: "100%" }}
+        >
+          <VStack w="100%">{element.content}</VStack>
+        </div>
       ))}
     </VStack>
   );
@@ -225,6 +237,7 @@ export const ArrayFieldTitleTemplate = (props) => {
   return <React.Fragment />;
 };
 
+// rjsf custom CustomRadioBtn as CustomR field
 export const CustomR = ({
   options,
   value,
@@ -245,6 +258,7 @@ export const CustomR = ({
   );
 };
 
+// rjsf custom RadioBtn field
 export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
   const { label, format } = schema ? schema : {};
@@ -294,11 +308,17 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   );
 };
 
+// rjsf custom Aadhaar field
 export const Aadhaar = (props) => {
   const { t } = useTranslation();
   return (
     <VStack space="10">
-      <FrontEndTypo.H3 ml="90px" bold color="textMaroonColor.400">
+      <FrontEndTypo.H3
+        ml="90px"
+        textAlign="center"
+        bold
+        color="textMaroonColor.400"
+      >
         {t("ENTERED_AADHAR_NOT_EDITABLE")}
       </FrontEndTypo.H3>
       <Image
@@ -321,6 +341,7 @@ export const Aadhaar = (props) => {
   );
 };
 
+// rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label, title } = schema ? schema : {};
@@ -367,6 +388,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
       <Select
+        key={value + items}
         selectedValue={value}
         accessibilityLabel={t(label ? label : title)}
         placeholder={t(label ? label : title)}
@@ -389,57 +411,33 @@ export const select = ({ options, value, onChange, required, schema }) => {
   );
 };
 
-export const readOnly = ({ options, value, onChange, required, schema }) => {
-  const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label } = schema ? schema : {};
+// rjsf custom readOnly field
+export const readOnly = ({ value, onChange, required, schema }) => {
+  const { title } = schema ? schema : {};
   const { t } = useTranslation();
   return (
-    <FormControl gap="4">
-      {label && (
-        <FormControl.Label
-          rounded="sm"
-          position="absolute"
-          left="1rem"
-          bg="white"
-          px="1"
-          m="0"
-          height={"1px"}
-          alignItems="center"
-          style={{
-            ...(value
-              ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
-              : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
-          }}
-        >
-          <Text fontSize="14" fontWeight="400">
-            {required && <Text color={"danger.500"}>*</Text>}
-            {value && (
-              <Text
-                marginLeft={"5px"}
-                fontWeight="700"
-                fontSize={14}
-                color={"#9E9E9E"}
-              >
-                {value}
-              </Text>
-            )}
+    <HStack gap="2">
+      <FrontEndTypo.H3 bold color="textMaroonColor.400">
+        {t(title)}
+      </FrontEndTypo.H3>
+      <Text fontSize="14" fontWeight="400">
+        {required && <Text color={"danger.500"}>*</Text>}
+        {value && (
+          <Text
+            marginLeft={"5px"}
+            fontWeight="700"
+            fontSize={14}
+            color={"#9E9E9E"}
+          >
+            : {value}
           </Text>
-        </FormControl.Label>
-      )}
-    </FormControl>
+        )}
+      </Text>
+    </HStack>
   );
 };
 
+// rjsf custom HFieldTemplate title layout Template use in orientation
 export const HFieldTemplate = ({
   id,
   style,
@@ -458,19 +456,20 @@ export const HFieldTemplate = ({
     <HStack
       style={style}
       space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
-      alignItems="start"
+      alignItems="flex-start"
       pl="3"
+      direction={["column", "row"]}
     >
       {(label || schema?.label) && typeof type === "string" && (
-        <Box w={["67%", "100%", "60%"]}>
+        <Box flex={["1", "1", "1"]}>
           {(id === "root" || schema?.label) && (
             <label htmlFor={id}>
-              <HStack space="1" alignItems="center">
+              <HStack space="2" alignItems="center">
                 <IconByName
                   name={schema?.icons}
-                  color="textGreyColor.800"
+                  color="textGreyColor.200"
                   isDisabled
-                  pr="2"
+                  _icon={{ size: "14px" }}
                 />
                 <AdminTypo.H6 color="textGreyColor.100">
                   {t(schema?.label ? schema?.label : label)}
@@ -484,7 +483,7 @@ export const HFieldTemplate = ({
           {description?.props?.description !== "" && description}
         </Box>
       )}
-      <Box w={["70%", "100%", "60%"]}>
+      <Box flex={["1", "3", "4"]}>
         {children}
         {errors}
         {help}
@@ -493,7 +492,8 @@ export const HFieldTemplate = ({
   );
 };
 
-const MultiCheck = ({
+// rjsf custom MultiCheck field
+export const MultiCheck = ({
   options,
   value,
   onChange,
@@ -557,7 +557,8 @@ const MultiCheck = ({
                   <input
                     checked={
                       value?.constructor?.name === "Array" &&
-                      value?.includes(item?.value)
+                      (value?.includes(item?.value) ||
+                        value?.includes(`${item?.value}`))
                     }
                     type="checkbox"
                     value={item?.value}
@@ -574,6 +575,7 @@ const MultiCheck = ({
   );
 };
 
+// rjsf custom textarea field
 const textarea = ({
   schema,
   options,
@@ -649,6 +651,7 @@ const validator = customizeValidator({
   },
 });
 
+
 const widgets = {
   RadioBtn,
   CustomR,
@@ -659,6 +662,7 @@ const widgets = {
   FileUpload,
   MobileNumber,
   MultiCheck,
+  readOnly,
 };
 
 const templates = {
@@ -670,6 +674,100 @@ const templates = {
   BaseInputTemplate,
   ArrayFieldTemplate,
 };
+
+// scroll to input error field
+export const scrollToField = ({ property } = {}) => {
+  if (property) {
+    const element = document.getElementById(
+      `element_${property.replace(".", "")}`
+    );
+    if (element) {
+      element?.scrollIntoView();
+    } else {
+      const element1 = document.getElementById(
+        `root_${property.replace(".", "")}__error`
+      );
+      if (element1) {
+        element1?.scrollIntoView();
+      }
+    }
+  }
+};
+
+// errors first error focus
+export const focusToField = (errors) => {
+  const firstError = errors?.[0];
+  scrollToField(firstError);
+};
+
+// trans form erros in i18 lang translate
+const transformErrors = (errors, schema, t) => {
+  return errors.map((error) => {
+    const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
+    if (error.name === "required") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        if (schemaItem?.format === "FileUpload") {
+          error.message = `${t("REQUIRED_MESSAGE_UPLOAD")} "${t(title)}"`;
+        } else {
+          error.message = `${t("REQUIRED_MESSAGE")} "${t(title)}"`;
+        }
+      } else {
+        error.message = `${t("REQUIRED_MESSAGE")}`;
+      }
+    } else if (error.name === "minItems") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        error.message = sprintF(
+          t("SELECT_MINIMUM"),
+          error?.params?.limit,
+          t(title)
+        );
+      } else {
+        error.message = sprintF(t("SELECT_MINIMUM"), error?.params?.limit, "");
+      }
+    } else if (error.name === "maxItems") {
+      if (schemaItem) {
+        let title = schemaItem.label ? schemaItem.label : schemaItem.title;
+        error.message = sprintF(
+          t("SELECT_MAXIMUM"),
+          error?.params?.limit,
+          t(title)
+        );
+      } else {
+        error.message = sprintF(t("SELECT_MAXIMUM"), error?.params?.limit, "");
+      }
+    } else if (error.name === "enum") {
+      error.message = `${t("SELECT_MESSAGE")}`;
+    } else if (error.name === "format") {
+      const { format } = error?.params ? error?.params : {};
+      let message = "REQUIRED_MESSAGE";
+      if (format === "email") {
+        message = "PLEASE_ENTER_VALID_EMAIL";
+      }
+      if (format === "string") {
+        message = "PLEASE_ENTER_VALID_STREING";
+      } else if (format === "number") {
+        message = "PLEASE_ENTER_VALID_NUMBER";
+      }
+
+      if (schema?.properties?.[error?.property]?.title) {
+        error.message = `${t(message)} "${t(
+          schema?.properties?.[error?.property]?.title
+        )}"`;
+      } else {
+        error.message = `${t(message)}`;
+      }
+    }
+    return error;
+  });
+};
+
+// rjsf onerror parmaeter for common
+const onError = (errors, dsat) => {
+  focusToField(errors);
+};
+
 export {
   widgets,
   templates,
@@ -677,4 +775,6 @@ export {
   FileUpload,
   validator,
   MobileNumber,
+  onError,
+  transformErrors,
 };

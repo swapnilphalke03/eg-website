@@ -101,7 +101,7 @@ export default function Agform({ userTokenInfo, footerLinks }) {
   };
 
   const otpfunction = async () => {
-    if (formData?.mobile.length < 10) {
+    if (formData?.mobile?.length < 10) {
       const data = await formSubmitCreate(formData);
 
       const newErrors = {
@@ -248,28 +248,30 @@ export default function Agform({ userTokenInfo, footerLinks }) {
         errors?.dob?.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "last_name"].forEach((key) => {
-      if (
-        key === "first_name" &&
-        data?.first_name?.replaceAll(" ", "") === ""
-      ) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+    ["grampanchayat", "first_name", "middle_name", "last_name"].forEach(
+      (key) => {
+        if (
+          key === "first_name" &&
+          data?.first_name?.replace(/ /g, "") === ""
+        ) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
 
-      if (key === "last_name" && data?.last_name?.replaceAll(" ", "") === "") {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
-      }
+        if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
 
-      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-        errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-        );
+        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+          errors?.[key]?.addError(
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          );
+        }
       }
-    });
+    );
 
     return errors;
   };
@@ -345,14 +347,14 @@ export default function Agform({ userTokenInfo, footerLinks }) {
     if (schema?.properties?.first_name) {
       newFormData = {
         ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        ["first_name"]: newFormData?.first_name.replace(/ /g, ""),
       };
     }
 
     if (schema?.properties?.last_name && newFormData?.last_name) {
       newFormData = {
         ...newFormData,
-        ["last_name"]: newFormData?.last_name.replaceAll(" ", ""),
+        ["last_name"]: newFormData?.last_name.replace(/ /g, ""),
       };
     }
 
