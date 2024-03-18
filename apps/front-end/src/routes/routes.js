@@ -1,8 +1,12 @@
 import React, { lazy } from "react";
+
 //v2 code
 //online_facilitator_onboarding
 const FacilitatorRegister = lazy(() =>
   import("v2/views/Facilitator/FacilitatorRegister/FacilitatorRegister")
+);
+const EpcpForm = lazy(() =>
+  import("v2/components/Functional/PrerakOnboardingDetail/EPCP/EpcpForm")
 );
 const FacilitatorOnboarding = lazy(() =>
   import("v2/views/Facilitator/FacilitatorOnboarding/FacilitatorOnboarding")
@@ -219,6 +223,10 @@ export default [
   {
     path: "/beneficiary/list",
     component: BenificiaryListView,
+  },
+  {
+    path: "/beneficiary/epcpform",
+    component: EpcpForm,
   },
   //end v2 code
 ];

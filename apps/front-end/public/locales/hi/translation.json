@@ -1209,7 +1209,7 @@
   "SEARCH_BY_LEARNER_NAME": "शिक्षार्थी के नाम से खोजें",
   "SEARCH_BY_NAME": "नाम द्वारा खोजें",
   "SEARCH_BY_PRERAK_NAME": "प्रेरक के नाम से खोजें",
-  "SELECT_MIN_MAX_ERROR":"कृपया न्युनतम 1 और अधिकतम 3 विकल्पो का चयन करे",
+  "SELECT_MIN_MAX_ERROR": "कृपया न्युनतम 1 और अधिकतम 3 विकल्पो का चयन करे",
   "SELECT": "चुनें",
   "SELECT_ACADEMIC_YEAR": "शैक्षणिक वर्ष चुनें",
   "SELECT_ALL": "सबका चयन करें",
@@ -1512,5 +1512,12 @@
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "उचित परिश्रम , हस्ताक्षरित प्रस्ताव",
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
-  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ"
+  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
+  "LEARNERS_USE_OF_THE_RSOS_APP": "शिक्षार्थियों द्वारा RSOS app का उपयोग",
+  "HAS_THE_LEARNER_LOGGED_INTO_THE_RSOS_APP": "शिक्षार्थी RSOS App पर login करती हैं ?",
+  "CHOOSE_THE_REASON": "एक कारण चुनें",
+  "DO_THE_LEARNERS_STUDY_THROUGH_VIDEOS/EBOOKS_ON_RSOS_APP": "शिक्षार्थी RSOS App पर विडियो/ई-बूक से पढ़ाई करती हैं ",
+  "ARE_YOU_TAKING_PRACTICE_TESTS_ON_THE_RSOS_APP": "RSOS App पर अभ्यास टेस्ट दे रहे है? ",
+  "DID_YOU_TAKE_THE_EPCP_EXAM_ON_THE_RSOS_APP": "RSOS App पर  e-PCP परीक्षा दी?",
+  "UPLOAD_A_CLEAR_PHOTO_OF_YOU_DOCUMENT": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
 }

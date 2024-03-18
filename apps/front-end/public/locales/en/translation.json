@@ -1512,5 +1512,12 @@
   "LEARNERS_TARGET": "Learner's Target",
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
   "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
-  "MONTHLY_UTILIZATION": "Monthly utilization certificate"
+  "MONTHLY_UTILIZATION": "Monthly utilization certificate",
+  "LEARNERS_USE_OF_THE_RSOS_APP": "Learner's Use of the RSOS App",
+  "HAS_THE_LEARNER_LOGGED_INTO_THE_RSOS_APP": "Has the learner logged into the RSOS App?",
+  "CHOOSE_THE_REASON": "Choose the reason",
+  "DO_THE_LEARNERS_STUDY_THROUGH_VIDEOS/EBOOKS_ON_RSOS_APP": "Do the learners study through videos/e-books on RSOS App?",
+  "ARE_YOU_TAKING_PRACTICE_TESTS_ON_THE_RSOS_APP": "Are you taking practice tests on the RSOS App?",
+  "DID_YOU_TAKE_THE_EPCP_EXAM_ON_THE_RSOS_APP": "Did you take the e-PCP exam on the RSOS App?",
+  "UPLOAD_A_CLEAR_PHOTO_OF_YOU_DOCUMENT": "Upload a clear photo of you document"
 }
