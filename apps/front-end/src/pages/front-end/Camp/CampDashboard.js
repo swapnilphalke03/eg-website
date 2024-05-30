@@ -19,7 +19,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { state_name } = await getSelectedProgramId();
+      const response = await getSelectedProgramId();
+      const { state_name } = response || {}; // Using destructuring with a default empty object {}
       setStateName(state_name);
     };
     fetchData();

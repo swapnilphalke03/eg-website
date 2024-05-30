@@ -312,7 +312,7 @@ const EpcpForm = ({ footerLinks }) => {
 
   const getFieldResponseByTitle = (title) => {
     // Find the object in data array where fields title matches the given title
-    const field = data.find((item) => item.fields[0].title === title);
+    const field = data?.find((item) => item.fields[0].title === title);
     if (title === "SELECTED_SUBJECT_BY_LEARNER") {
       const res = field?.field_responses?.[0]?.response_value || "[]";
       const subjectsArray = JSON.parse(res);
